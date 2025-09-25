@@ -1,0 +1,15 @@
+<resources>
+  <string name="app_name">Aura</string>
+
+  <string name="prompt_identifier">Identifiant</string>
+  <string name="prompt_password">Mot de passe</string>
+  <string name="action_sign_in">Connexion</string>
+
+  <string name="balance">Balance :</string>
+  <string name="disconnect">Déconnexion</string>
+  <string name="bank_transfer">Faire un virement</string>
+
+  <string name="prompt_recipient">Destinataire</string>
+  <string name="prompt_amount">Montant</string>
+  <string name="action_transfer">Faire le virement</string>
+</resources>

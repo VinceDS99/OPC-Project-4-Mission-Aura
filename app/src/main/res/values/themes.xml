@@ -1,0 +1,17 @@
+<resources>
+  <!-- Base application theme. -->
+  <style name="Theme.Aura"
+    parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <!-- Primary brand color. -->
+    <item name="colorPrimary">@color/silver_pink</item>
+    <item name="colorPrimaryVariant">@color/rocket_metallic</item>
+    <item name="colorOnPrimary">@color/white</item>
+    <!-- Secondary brand color. -->
+    <item name="colorSecondary">@color/chocolate_kisses</item>
+    <item name="colorSecondaryVariant">@color/licorice</item>
+    <item name="colorOnSecondary">@color/white</item>
+    <!-- Status bar color. -->
+    <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+    <!-- Customize your theme here. -->
+  </style>
+</resources>
