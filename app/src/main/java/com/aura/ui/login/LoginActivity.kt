@@ -24,32 +24,38 @@ class LoginActivity : AppCompatActivity() {
 
     lifecycleScope.launchWhenStarted {
       viewModel.uiState.collect { state ->
-        // Activation du bouton uniquement si les champs sont remplis
-        binding.login.isEnabled = state.isButtonEnabled
+        // Bouton activé uniquement si formulaire complet et pas en chargement
+        binding.login.isEnabled = state.isButtonEnabled && !state.isLoading
 
-        // Affiche ou cache la ProgressBar
+        // ProgressBar visible pendant le login
         binding.loading.visibility = if (state.isLoading) View.VISIBLE else View.GONE
 
-        // Affiche le toast uniquement si loginSuccess n'est pas null
+        // Si login terminé
         state.loginSuccess?.let { success ->
           if (success) {
-            startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+            // Passe l'identifiant à HomeActivity via Intent extras
+            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+            intent.putExtra("USER_ID", state.id)
+            startActivity(intent)
             finish()
           } else {
-            Toast.makeText(this@LoginActivity, "Login failed", Toast.LENGTH_SHORT).show()
+            state.errorMessage?.let { msg ->
+              Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
+            }
           }
         }
       }
     }
 
+    // Écoute de la saisie
     binding.identifier.doOnTextChanged { text, _, _, _ ->
       viewModel.onIdChanged(text.toString())
     }
-
     binding.password.doOnTextChanged { text, _, _, _ ->
       viewModel.onPasswordChanged(text.toString())
     }
 
+    // Click login
     binding.login.setOnClickListener {
       viewModel.login()
     }
