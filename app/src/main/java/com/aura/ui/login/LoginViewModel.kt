@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 data class LoginUiState(
     val id: String = "",
@@ -55,6 +56,8 @@ class LoginViewModel : ViewModel() {
         _uiState.update { it.copy(isLoading = true, loginSuccess = null, errorMessage = null) }
 
         viewModelScope.launch {
+            // 🔹 Simulation d'un délai pour l'affichage de la ProgressBar au login
+            //delay(2000)
             val result = LoginRepository.login(credentials)
 
             _uiState.update {
