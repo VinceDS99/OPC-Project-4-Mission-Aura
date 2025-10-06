@@ -18,7 +18,7 @@ class HomeViewModel : ViewModel() {
         _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
         viewModelScope.launch {
-             delay(5000) // Simuler un délai pour la progress bar
+            delay(3000) // simulation du délai pour voir la progress bar
 
             when (val result = HomeRepository.getAccounts(userId)) {
                 is HomeResult.Success -> {
@@ -26,7 +26,8 @@ class HomeViewModel : ViewModel() {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            balance = mainAccount?.balance?.toString() ?: "0.0"
+                            balance = mainAccount?.balance?.toString() ?: "0.0",
+                            errorMessage = null
                         )
                     }
                 }

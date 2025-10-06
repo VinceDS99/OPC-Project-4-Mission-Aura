@@ -21,10 +21,11 @@ class HomeActivity : AppCompatActivity() {
   private lateinit var binding: ActivityHomeBinding
   private val viewModel: HomeViewModel by viewModels()
   private var userId: String? = null
+  private var currentBalance: Double = 0.0
 
   private val startTransferActivityForResult =
-    registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-      // TODO si nécessaire
+    registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _: ActivityResult ->
+      userId?.let { viewModel.loadAccounts(it) }
     }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,37 +35,33 @@ class HomeActivity : AppCompatActivity() {
 
     userId = intent.getStringExtra("USER_ID")
 
-    // Observer les changements du ViewModel
     lifecycleScope.launchWhenStarted {
       viewModel.uiState.collect { state ->
-        // ProgressBar visible pendant chargement
         binding.loadingProgressBar.visibility = if (state.isLoading) View.VISIBLE else View.GONE
-
-        // Retry button visible seulement si erreur
         binding.retryButton.visibility = if (state.errorMessage != null) View.VISIBLE else View.GONE
-
-        // Titre visible uniquement si succès
         binding.title.visibility = if (!state.isLoading && state.errorMessage == null) View.VISIBLE else View.GONE
 
-        // Balance ou message d'erreur centré
         binding.balance.visibility = if (state.isLoading) View.GONE else View.VISIBLE
         binding.balance.text = when {
           state.isLoading -> ""
           state.errorMessage != null -> "Erreur : ${state.errorMessage}"
-          else -> "${state.balance}€"
+          else -> {
+            currentBalance = state.balance.toDoubleOrNull() ?: 0.0
+            String.format("%.2f€", currentBalance)
+          }
         }
       }
     }
 
-    // Charger les comptes si userId dispo
     userId?.let { viewModel.loadAccounts(it) }
 
-    // Retry button pour relancer la requête
     binding.retryButton.setOnClickListener { userId?.let { viewModel.loadAccounts(it) } }
 
-    // Bouton transfer
     binding.transfer.setOnClickListener {
-      startTransferActivityForResult.launch(Intent(this@HomeActivity, TransferActivity::class.java))
+      val intent = Intent(this@HomeActivity, TransferActivity::class.java)
+      intent.putExtra("USER_ID", userId)
+      intent.putExtra("USER_BALANCE", currentBalance)
+      startTransferActivityForResult.launch(intent)
     }
   }
 
