@@ -23,15 +23,15 @@ class LoginUnitTest {
 
     @Test
     fun `login succeeds with correct credentials`() = runBlocking {
-        // Arrange
+
         val userId = "1234"
         val password = "password"
         every { runBlocking { repository.login(userId, password) } } returns true
 
-        // Act
+
         val result = repository.login(userId, password)
 
-        // Assert
+
         assertTrue(result, "Login should succeed with correct credentials")
     }
 
